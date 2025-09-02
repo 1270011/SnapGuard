@@ -29,9 +29,9 @@
 ### 1. Download SnapGuard
 
 ```bash
-git clone https://github.com/yourusername/snapguard-pro.git
-cd snapguard-pro
-chmod +x proxmox-snapshot-backup.sh
+git clone https://github.com/yourusername/SnapGuard.git
+cd SnapGuard
+chmod +x pve-backup.sh
 ```
 
 ### 2. Configure Your Backup
@@ -39,7 +39,7 @@ chmod +x proxmox-snapshot-backup.sh
 Edit the script configuration section:
 
 ```bash
-nano proxmox-snapshot-backup.sh
+nano pve-backup.sh
 ```
 
 ### 3. Setup USB Mount Service (Optional)
@@ -76,7 +76,7 @@ sudo systemctl enable usb-backup-mount.service
 ### 4. Run Your First Backup
 
 ```bash
-sudo ./proxmox-snapshot-backup.sh
+sudo ./pve-backup.sh
 ```
 
 ## ⚙️ Configuration Parameters
@@ -110,14 +110,14 @@ The script automatically adjusts snapshot size based on available Volume Group s
 
 ```bash
 # Daily backup with logging to file
-0 2 * * * /path/to/snapguard-pro/proxmox-snapshot-backup.sh >> /var/log/proxmox-backup.log 2>&1
+0 2 * * * /path/to/snapguard/pve-backup.sh >> /var/log/proxmox-backup.log 2>&1
 ```
 
 ### Weekly Backups on Sundays
 
 ```bash
 # Weekly backup every Sunday at 3:00 AM with logging
-0 3 * * 0 /path/to/snapguard-pro/proxmox-snapshot-backup.sh >> /var/log/proxmox-backup.log 2>&1
+0 3 * * 0 /path/to/snapguard/pve-backup.sh >> /var/log/proxmox-backup.log 2>&1
 ```
 
 ## 📁 File Structure
@@ -186,7 +186,7 @@ cat /mnt/usb/backup-info-*.txt
 
 # Check what the script outputs (no built-in logging)
 # Use shell redirection when running manually:
-./proxmox-snapshot-backup.sh 2>&1 | tee backup-run.log
+./pve-backup.sh 2>&1 | tee backup-run.log
 ```
 
 ### Monitor Cron Jobs
@@ -253,10 +253,10 @@ Run with verbose bash output:
 
 ```bash
 # Show all commands being executed
-bash -x ./proxmox-snapshot-backup.sh
+bash -x ./pve-backup.sh
 
 # Capture all output to file
-./proxmox-snapshot-backup.sh 2>&1 | tee debug-output.log
+./pve-backup.sh 2>&1 | tee debug-output.log
 ```
 
 ## 🔒 Security Considerations
