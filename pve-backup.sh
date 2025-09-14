@@ -58,17 +58,15 @@ fi
 echo "Cluster filesystem check: OK"
 
 # === NEW: Backup PVE configuration FIRST (before snapshot) ===
-echo "1. Backing up Proxmox configuration..."
+echo "1. Backing up Proxmox configuration (live system)..."
 tar -czf "${PVE_CONFIG_BACKUP}" \
     --warning=no-file-changed \
     --warning=no-file-removed \
-    /etc/pve/ \
-    /etc/postfix/ \
-    /etc/systemd/system/multi-user.target.wants/ \
-    /root/.bashrc \
-    /root/.bash_history \
-    /root/scripts/ 2>/dev/null || {
-        echo "WARNING: Some files in PVE config backup had issues, continuing..."
+    /etc/ \
+    /root/ \
+    /usr/local/ \
+    /opt/ 2>/dev/null || {
+        echo "WARNING: Some files in config backup had issues, continuing..."
     }
 
 echo "PVE configuration backup saved: ${PVE_CONFIG_BACKUP}"
@@ -125,7 +123,7 @@ echo "   Target: ${BACKUP_FILE}"
 # Make sure we're not working in the snapshot directory
 cd /
 
-# Tar with better error handling - EXCLUDING /etc/pve since it's backed up separately
+# Tar with complete system backup - ONLY excluding VMs and temporary/virtual filesystems
 tar -czf "${BACKUP_FILE}" \
     --exclude="${SNAPSHOT_MOUNT}/dev/*" \
     --exclude="${SNAPSHOT_MOUNT}/proc/*" \
@@ -134,9 +132,10 @@ tar -czf "${BACKUP_FILE}" \
     --exclude="${SNAPSHOT_MOUNT}/run/*" \
     --exclude="${SNAPSHOT_MOUNT}/mnt/*" \
     --exclude="${SNAPSHOT_MOUNT}/media/*" \
-    --exclude="${SNAPSHOT_MOUNT}/var/lib/vz/*" \
-    --exclude="${SNAPSHOT_MOUNT}/var/log/*" \
-    --exclude="${SNAPSHOT_MOUNT}/etc/pve/*" \
+    --exclude="${SNAPSHOT_MOUNT}/var/lib/vz/images/*" \
+    --exclude="${SNAPSHOT_MOUNT}/var/lib/vz/dump/*" \
+    --exclude="${SNAPSHOT_MOUNT}/swapfile" \
+    --exclude="${SNAPSHOT_MOUNT}/lost+found" \
     --warning=no-file-changed \
     --warning=no-file-removed \
     -C "${SNAPSHOT_MOUNT}" . || {
